@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: log-generator
-  namespace: wikijs
+  namespace: nttdata
 spec:
   replicas: 1
   selector:
