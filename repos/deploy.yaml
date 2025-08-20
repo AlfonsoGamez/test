@@ -40,7 +40,7 @@ spec:
             - |
               while true; do
                 echo "[$(date)] Hello from log-generator deployment!";
-                sleep 1;
+                sleep 15;
               done
       restartPolicy: Always
       terminationGracePeriodSeconds: 5
