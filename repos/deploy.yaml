@@ -1,2 +1,58 @@
----
-test
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: log-generator
+  namespace: wikijs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-generator
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: log-generator
+    spec:
+      containers:
+        - resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          terminationMessagePath: /dev/termination-log
+          name: logger
+          command:
+            - /bin/bash
+            - '-c'
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+          imagePullPolicy: Always
+          terminationMessagePolicy: File
+          image: image-registry.openshift-image-registry.svc:5000/openshift/rhel7_jvm
+          args:
+            - |
+              while true; do
+                echo "[$(date)] Hello from log-generator deployment!";
+                sleep 10;
+              done
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 5
+      dnsPolicy: ClusterFirst
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
