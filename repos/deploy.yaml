@@ -10,38 +10,31 @@ spec:
       app: log-generator
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: log-generator
     spec:
       containers:
-        - resources:
+        - name: logger
+          image: image-registry.apps.rhv.dllosura.com/nttdata/ubi-debug
+          imagePullPolicy: Always
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              sleep infinity
+          resources:
             limits:
               cpu: 100m
               memory: 128Mi
             requests:
               cpu: 50m
               memory: 64Mi
-          terminationMessagePath: /dev/termination-log
-          name: logger
-          command:
-            - /bin/bash
-            - '-c'
           securityContext:
-            capabilities:
-              drop:
-                - ALL
             runAsNonRoot: true
             allowPrivilegeEscalation: false
-          imagePullPolicy: Always
+            capabilities:
+              drop: ["ALL"]
+          terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
-          image: image-registry.apps.rhv.dllosura.com/nttdata/ubi-debug
-          args:
-            - |
-              while true; do
-                echo "[$(date)] Hello from log-generator deployment!";
-                sleep 10;
-              done
       restartPolicy: Always
       terminationGracePeriodSeconds: 5
       dnsPolicy: ClusterFirst
