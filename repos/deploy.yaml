@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: logger
-          image: image-registry.apps.rhv.dllosura.com/nttdata/ubi-debug
+          image: image-registry.openshift-image-registry.svc:5000/nttdata/ubi-debug:latest
           imagePullPolicy: Always
           command: ["/bin/bash", "-c"]
           args:
